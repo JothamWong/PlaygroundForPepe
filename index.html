@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pepe's Playground!</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        #pepe {
+            position: absolute;
+            width: 120px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <img id="pepe" src="assets/idle.gif">
+
+    <script>
+        const pepe = document.getElementById("pepe");
+        const rect = pepe.getBoundingClientRect();
+
+        const states = {
+            idle: "assets/idle.gif",
+            runRight: "assets/running_right.gif",
+            runLeft: "assets/running_left.gif",
+            jump: "assets/jumping.gif",
+            wave: "assets/waving.gif",
+            sad: "assets/sad.gif",
+            review: "assets/review.gif",
+            waiting: "assets/waiting.gif"
+        };
+
+        let x = window.innerWidth / 2;
+        let y = window.innerHeight / 2;
+
+        function moveTo(nx, ny, duration = 2000) {
+            const startX = x;
+            const startY = y;
+            const dx = nx - startX;
+            const dy = ny - startY;
+
+            let startTime = null;
+
+            function animate(time) {
+                if (!startTime) startTime = time;
+                const progress = Math.min((time - startTime) / duration, 1);
+
+                x = startX + dx * progress;
+                y = startY + dy * progress;
+
+                pepe.style.left = x + "px";
+                pepe.style.top = y + "px";
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    idlePhase();
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        function randomMove() {
+            const nx = Math.random() * (window.innerWidth - rect.width);
+            const ny = Math.random() * (window.innerHeight - rect.height);
+
+            if (nx > x) {
+                pepe.src = states.runRight;
+            } else {
+                pepe.src = states.runLeft;
+            }
+
+            moveTo(nx, ny, 1500 + Math.random() * 2000);
+        }
+
+        function idlePhase() {
+            const idleStates = ["idle", "wave", "sad", "jump", "review", "waiting"];
+            const state = idleStates[Math.floor(Math.random() * idleStates.length)];
+
+            pepe.src = states[state];
+
+            setTimeout(randomMove, 1000 + Math.random() * 2000);
+        }
+
+        pepe.style.left = x + "px";
+        pepe.style.top = y + "px";
+
+        idlePhase();
+    </script>
