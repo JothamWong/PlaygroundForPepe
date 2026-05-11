@@ -25,7 +25,6 @@
 
     <script>
         const pepe = document.getElementById("pepe");
-        const rect = pepe.getBoundingClientRect();
 
         const states = {
             idle: "assets/idle.gif",
@@ -70,6 +69,7 @@
         }
 
         function randomMove() {
+            const rect = pepe.getBoundingClientRect();
             const nx = Math.random() * (window.innerWidth - rect.width);
             const ny = Math.random() * (window.innerHeight - rect.height);
 
